@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Video, Wifi, AlertTriangle, Truck, Activity, Radio } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
-import { MapView } from "@/components/map-view";
 import { StatusBadge } from "@/components/status-badge";
 import { VEHICLES, generateTimeSeries, formatTimeAgo } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
@@ -92,9 +91,43 @@ function Overview() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <MapView vehicles={VEHICLES} height={420} />
-        </div>
+        <Card className="border-border/60 p-5 lg:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold">Status operacional da frota</h2>
+              <p className="text-xs text-muted-foreground">Distribuição consolidada por categoria</p>
+            </div>
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Atualizado agora</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              { label: "Câmeras online", value: online, total, tone: "success" as const },
+              { label: "Câmeras instáveis", value: VEHICLES.filter(v => v.cameraStatus === "unstable").length, total, tone: "warning" as const },
+              { label: "Câmeras offline", value: VEHICLES.filter(v => v.cameraStatus === "offline" || v.cameraStatus === "fault").length, total, tone: "destructive" as const },
+              { label: "Conexão ativa", value: connected, total, tone: "info" as const },
+              { label: "GPS ativo", value: VEHICLES.filter(v => v.gps).length, total, tone: "success" as const },
+              { label: "Em ignição", value: VEHICLES.filter(v => v.ignition).length, total, tone: "info" as const },
+            ].map((row) => {
+              const pct = (row.value / row.total) * 100;
+              const barColor =
+                row.tone === "success" ? "var(--success)" :
+                row.tone === "warning" ? "var(--warning)" :
+                row.tone === "destructive" ? "var(--destructive)" : "var(--primary)";
+              return (
+                <div key={row.label} className="rounded-md border border-border/60 bg-muted/10 p-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{row.label}</span>
+                    <span className="font-medium text-foreground">{row.value}<span className="text-muted-foreground">/{row.total}</span></span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: barColor }} />
+                  </div>
+                  <div className="mt-1 text-[10px] text-muted-foreground">{pct.toFixed(1)}%</div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
         <Card className="border-border/60 p-5">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold">Alertas recentes</h2>
