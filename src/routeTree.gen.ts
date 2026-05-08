@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as ConexaoRouteImport } from './routes/conexao'
 import { Route as CamerasRouteImport } from './routes/cameras'
 import { Route as IndexRouteImport } from './routes/index'
 
+const EventosRoute = EventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConexaoRoute = ConexaoRouteImport.update({
   id: '/conexao',
   path: '/conexao',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
   '/conexao': typeof ConexaoRoute
+  '/eventos': typeof EventosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
   '/conexao': typeof ConexaoRoute
+  '/eventos': typeof EventosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
   '/conexao': typeof ConexaoRoute
+  '/eventos': typeof EventosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cameras' | '/conexao'
+  fullPaths: '/' | '/cameras' | '/conexao' | '/eventos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cameras' | '/conexao'
-  id: '__root__' | '/' | '/cameras' | '/conexao'
+  to: '/' | '/cameras' | '/conexao' | '/eventos'
+  id: '__root__' | '/' | '/cameras' | '/conexao' | '/eventos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CamerasRoute: typeof CamerasRoute
   ConexaoRoute: typeof ConexaoRoute
+  EventosRoute: typeof EventosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/eventos': {
+      id: '/eventos'
+      path: '/eventos'
+      fullPath: '/eventos'
+      preLoaderRoute: typeof EventosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conexao': {
       id: '/conexao'
       path: '/conexao'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CamerasRoute: CamerasRoute,
   ConexaoRoute: ConexaoRoute,
+  EventosRoute: EventosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
