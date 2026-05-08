@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Video, Wifi, AlertTriangle, Truck, Activity, Radio } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
-import { MapView } from "@/components/map-view";
 import { StatusBadge } from "@/components/status-badge";
 import { VEHICLES, generateTimeSeries, formatTimeAgo } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
