@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ConexaoRouteImport } from './routes/conexao'
 import { Route as CamerasRouteImport } from './routes/cameras'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ConexaoRoute = ConexaoRouteImport.update({
+  id: '/conexao',
+  path: '/conexao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CamerasRoute = CamerasRouteImport.update({
   id: '/cameras',
   path: '/cameras',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
+  '/conexao': typeof ConexaoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
+  '/conexao': typeof ConexaoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
+  '/conexao': typeof ConexaoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cameras'
+  fullPaths: '/' | '/cameras' | '/conexao'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cameras'
-  id: '__root__' | '/' | '/cameras'
+  to: '/' | '/cameras' | '/conexao'
+  id: '__root__' | '/' | '/cameras' | '/conexao'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CamerasRoute: typeof CamerasRoute
+  ConexaoRoute: typeof ConexaoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/conexao': {
+      id: '/conexao'
+      path: '/conexao'
+      fullPath: '/conexao'
+      preLoaderRoute: typeof ConexaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cameras': {
       id: '/cameras'
       path: '/cameras'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CamerasRoute: CamerasRoute,
+  ConexaoRoute: ConexaoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
