@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Bell, Maximize2, Search, Activity, Wifi } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 function LiveClock() {
   const [now, setNow] = useState<Date | null>(null);
@@ -30,7 +31,7 @@ export function AppShell() {
 
   return (
     <SidebarProvider>
-      <div className="dark min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
@@ -47,6 +48,7 @@ export function AppShell() {
                   className="h-8 w-72 pl-8 text-sm"
                 />
               </div>
+              <ThemeToggle />
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleFullscreen}>
                 <Maximize2 className="h-4 w-4" />
               </Button>
