@@ -206,10 +206,3 @@ function FrameView({ label, src, online, recording }: { label: string; src: stri
     </div>
   );
 }
-
-const tooltipStyle = {
-  background: "oklch(0.21 0.025 250)",
-  border: "1px solid oklch(0.3 0.025 250)",
-  borderRadius: 8,
-  fontSize: 12,
-};
