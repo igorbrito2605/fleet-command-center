@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Video, Wifi, AlertTriangle, Activity, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Video, Wifi, AlertTriangle, Activity, ShieldCheck, BarChart3 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +15,7 @@ import {
 
 const items = [
   { title: "Visão Geral", url: "/", icon: LayoutDashboard },
+  { title: "Indicadores", url: "/indicadores", icon: BarChart3 },
   { title: "Câmeras", url: "/cameras", icon: Video },
   { title: "Conexão", url: "/conexao", icon: Wifi },
   { title: "Eventos", url: "/eventos", icon: AlertTriangle },
