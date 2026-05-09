@@ -48,6 +48,7 @@ export function AppShell() {
                   className="h-8 w-72 pl-8 text-sm"
                 />
               </div>
+              <ThemeToggle />
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleFullscreen}>
                 <Maximize2 className="h-4 w-4" />
               </Button>
