@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Bell, Maximize2, Search, Activity, Wifi } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 function LiveClock() {
   const [now, setNow] = useState<Date | null>(null);
