@@ -46,20 +46,7 @@ function Cameras() {
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 
-  const pieData = [
-    { name: "Online", value: online, color: "oklch(0.72 0.18 150)" },
-    { name: "Instável", value: VEHICLES.filter((v) => v.cameraStatus === "unstable").length, color: "oklch(0.82 0.17 85)" },
-    { name: "Offline", value: offline, color: "oklch(0.65 0.24 25)" },
-    { name: "Falha", value: fault, color: "oklch(0.65 0.2 290)" },
-  ];
-
-  const series = generateTimeSeries(24, 92, 5);
-
-  const faultRanking = [...VEHICLES]
-    .filter((v) => v.cameraStatus !== "online")
-    .sort((a, b) => b.offlineMinutes - a.offlineMinutes)
-    .slice(0, 8)
-    .map((v) => ({ name: v.plate, minutos: v.offlineMinutes }));
+  const criticalAlerts = VEHICLES.filter((v) => v.cameraStatus === "offline" && v.offlineMinutes > 5);
 
   const criticalAlerts = VEHICLES.filter((v) => v.cameraStatus === "offline" && v.offlineMinutes > 5);
 
