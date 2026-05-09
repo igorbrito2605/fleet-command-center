@@ -100,8 +100,13 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="pt-BR" className="dark">
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('smov-theme')||'dark';var r=document.documentElement;if(t==='dark'){r.classList.add('dark');}else{r.classList.remove('dark');}}catch(e){}})();`,
+          }}
+        />
       </head>
-      <body className="dark">
+      <body>
         {children}
         <Scripts />
       </body>
