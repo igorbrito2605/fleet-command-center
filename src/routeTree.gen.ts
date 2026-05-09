@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndicadoresRouteImport } from './routes/indicadores'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as ConexaoRouteImport } from './routes/conexao'
 import { Route as CamerasRouteImport } from './routes/cameras'
 import { Route as IndexRouteImport } from './routes/index'
 
+const IndicadoresRoute = IndicadoresRouteImport.update({
+  id: '/indicadores',
+  path: '/indicadores',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventosRoute = EventosRouteImport.update({
   id: '/eventos',
   path: '/eventos',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/cameras': typeof CamerasRoute
   '/conexao': typeof ConexaoRoute
   '/eventos': typeof EventosRoute
+  '/indicadores': typeof IndicadoresRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cameras': typeof CamerasRoute
   '/conexao': typeof ConexaoRoute
   '/eventos': typeof EventosRoute
+  '/indicadores': typeof IndicadoresRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/cameras': typeof CamerasRoute
   '/conexao': typeof ConexaoRoute
   '/eventos': typeof EventosRoute
+  '/indicadores': typeof IndicadoresRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cameras' | '/conexao' | '/eventos'
+  fullPaths: '/' | '/cameras' | '/conexao' | '/eventos' | '/indicadores'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cameras' | '/conexao' | '/eventos'
-  id: '__root__' | '/' | '/cameras' | '/conexao' | '/eventos'
+  to: '/' | '/cameras' | '/conexao' | '/eventos' | '/indicadores'
+  id: '__root__' | '/' | '/cameras' | '/conexao' | '/eventos' | '/indicadores'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +76,18 @@ export interface RootRouteChildren {
   CamerasRoute: typeof CamerasRoute
   ConexaoRoute: typeof ConexaoRoute
   EventosRoute: typeof EventosRoute
+  IndicadoresRoute: typeof IndicadoresRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/indicadores': {
+      id: '/indicadores'
+      path: '/indicadores'
+      fullPath: '/indicadores'
+      preLoaderRoute: typeof IndicadoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/eventos': {
       id: '/eventos'
       path: '/eventos'
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   CamerasRoute: CamerasRoute,
   ConexaoRoute: ConexaoRoute,
   EventosRoute: EventosRoute,
+  IndicadoresRoute: IndicadoresRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
