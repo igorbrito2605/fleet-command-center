@@ -1,16 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck } from "lucide-react";
+import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck, Signal, Camera as CameraIcon } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
-import { MapView } from "@/components/map-view";
 import { StatusBadge } from "@/components/status-badge";
 import { VEHICLES, generateTimeSeries, formatTimeAgo } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -29,7 +25,7 @@ export const Route = createFileRoute("/cameras")({
   component: Cameras,
 });
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 12;
 
 function Cameras() {
   const [q, setQ] = useState("");
@@ -72,7 +68,7 @@ function Cameras() {
   const criticalAlerts = VEHICLES.filter((v) => v.cameraStatus === "offline" && v.offlineMinutes > 5);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <p className="text-xs uppercase tracking-widest text-muted-foreground">Painel de câmeras</p>
         <h1 className="text-2xl font-semibold tracking-tight">Situação das câmeras embarcadas</h1>
@@ -104,45 +100,54 @@ function Cameras() {
         </Card>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="border-border/60 p-5">
-          <h3 className="mb-2 text-sm font-semibold">Distribuição de status</h3>
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={2}>
-                  {pieData.map((d, i) => <Cell key={i} fill={d.color} />)}
-                </Pie>
-                <Tooltip contentStyle={tooltipStyle} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-              </PieChart>
-            </ResponsiveContainer>
+      {/* === SEÇÃO: INDICADORES E TENDÊNCIAS === */}
+      <section className="space-y-4">
+        <div className="flex items-end justify-between border-b border-border/60 pb-2">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Seção 01</p>
+            <h2 className="text-lg font-semibold tracking-tight">Indicadores e tendências</h2>
           </div>
-        </Card>
-        <Card className="border-border/60 p-5 lg:col-span-2">
-          <h3 className="mb-2 text-sm font-semibold">Disponibilidade nas últimas 24h</h3>
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={series}>
-                <defs>
-                  <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.72 0.18 150)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="oklch(0.72 0.18 150)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="oklch(0.3 0.025 250)" strokeDasharray="3 3" />
-                <XAxis dataKey="time" stroke="oklch(0.7 0.02 250)" fontSize={11} />
-                <YAxis domain={[60, 100]} stroke="oklch(0.7 0.02 250)" fontSize={11} unit="%" />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Area type="monotone" dataKey="value" stroke="oklch(0.72 0.18 150)" strokeWidth={2} fill="url(#cg)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-      </div>
+          <span className="text-xs text-muted-foreground">Status · Disponibilidade · Top falhas</span>
+        </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="border-border/60 p-5 lg:col-span-2">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <Card className="border-border/60 p-5">
+            <h3 className="mb-2 text-sm font-semibold">Distribuição de status</h3>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={2}>
+                    {pieData.map((d, i) => <Cell key={i} fill={d.color} />)}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          <Card className="border-border/60 p-5 lg:col-span-2">
+            <h3 className="mb-2 text-sm font-semibold">Disponibilidade nas últimas 24h</h3>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={series}>
+                  <defs>
+                    <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="oklch(0.72 0.18 150)" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="oklch(0.72 0.18 150)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="oklch(0.3 0.025 250)" strokeDasharray="3 3" />
+                  <XAxis dataKey="time" stroke="oklch(0.7 0.02 250)" fontSize={11} />
+                  <YAxis domain={[60, 100]} stroke="oklch(0.7 0.02 250)" fontSize={11} unit="%" />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Area type="monotone" dataKey="value" stroke="oklch(0.72 0.18 150)" strokeWidth={2} fill="url(#cg)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+
+        <Card className="border-border/60 p-5">
           <h3 className="mb-2 text-sm font-semibold">Top falhas por veículo (minutos offline)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -156,20 +161,27 @@ function Cameras() {
             </ResponsiveContainer>
           </div>
         </Card>
-        <MapView vehicles={VEHICLES} height={264} />
-      </div>
+      </section>
 
-      <Card className="border-border/60 p-5">
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <h3 className="mr-auto text-sm font-semibold">Veículos · câmeras</h3>
+      {/* === SEÇÃO: FROTA E CÂMERAS === */}
+      <section className="space-y-4">
+        <div className="flex items-end justify-between border-b border-border/60 pb-2">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Seção 02</p>
+            <h2 className="text-lg font-semibold tracking-tight">Frota e câmeras</h2>
+          </div>
+          <span className="text-xs text-muted-foreground">Frame frontal e interno em tempo real</span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
           <Input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(1); }}
             placeholder="Buscar veículo, placa..."
-            className="h-8 w-56"
+            className="h-9 w-64"
           />
           <Select value={filter} onValueChange={(v) => { setFilter(v); setPage(1); }}>
-            <SelectTrigger className="h-8 w-40"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-9 w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos status</SelectItem>
               <SelectItem value="online">Online</SelectItem>
@@ -178,71 +190,101 @@ function Cameras() {
               <SelectItem value="fault">Falha</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm">Exportar CSV</Button>
+          <span className="ml-auto text-xs text-muted-foreground">{filtered.length} veículos</span>
         </div>
-        <div className="overflow-auto rounded-md border border-border/60">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Veículo</TableHead>
-                <TableHead>Placa</TableHead>
-                <TableHead>Câmeras</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Última transmissão</TableHead>
-                <TableHead>Sinal</TableHead>
-                <TableHead>Gravando</TableHead>
-                <TableHead>Tempo offline</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paged.map((v) => (
-                <TableRow key={v.id}>
-                  <TableCell className="font-medium">{v.id}</TableCell>
-                  <TableCell className="font-mono text-xs">{v.plate}</TableCell>
-                  <TableCell>{v.cameras}</TableCell>
-                  <TableCell><StatusBadge status={v.cameraStatus} /></TableCell>
-                  <TableCell className="text-muted-foreground">{formatTimeAgo(v.lastTransmission)}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className={`h-full ${v.signalQuality > 70 ? "bg-success" : v.signalQuality > 40 ? "bg-warning" : "bg-destructive"}`}
-                          style={{ width: `${v.signalQuality}%` }}
-                        />
-                      </div>
-                      <span className="text-xs tabular-nums">{v.signalQuality}%</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {v.recording ? (
-                      <span className="inline-flex items-center gap-1 text-xs text-success">
-                        <span className="h-1.5 w-1.5 rounded-full bg-success pulse-dot" /> REC
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">
-                    {v.offlineMinutes > 0 ? `${v.offlineMinutes}m` : "—"}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {paged.map((v) => (
+            <VehicleCameraCard key={v.id} vehicle={v} />
+          ))}
         </div>
-        <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-          <span>{filtered.length} resultados</span>
+
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span>Página {page} de {totalPages}</span>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
               Anterior
             </Button>
-            <span>{page} / {totalPages}</span>
             <Button size="sm" variant="outline" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
               Próxima
             </Button>
           </div>
         </div>
-      </Card>
+      </section>
+    </div>
+  );
+}
+
+function VehicleCameraCard({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
+  const isOnline = v.cameraStatus === "online";
+  // Deterministic placeholder frames based on vehicle id
+  const seed = v.id.replace(/\D/g, "");
+  const frontFrame = `https://picsum.photos/seed/front-${seed}/400/240`;
+  const innerFrame = `https://picsum.photos/seed/inner-${seed}/400/240`;
+
+  return (
+    <Card className="group overflow-hidden border-border/60 transition-colors hover:border-primary/40">
+      {/* Header */}
+      <div className="flex items-center gap-3 border-b border-border/60 bg-muted/20 px-4 py-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-border/60 bg-background">
+          <Truck className="h-4 w-4 text-primary" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-mono text-sm font-semibold tracking-wide">{v.plate}</p>
+          <p className="truncate text-[11px] text-muted-foreground">{v.id} · {v.name}</p>
+        </div>
+        <StatusBadge status={v.cameraStatus} />
+      </div>
+
+      {/* Frames */}
+      <div className="grid grid-cols-2 gap-px bg-border/60">
+        <FrameView label="Frontal" src={frontFrame} online={isOnline} recording={v.recording} />
+        <FrameView label="Interna" src={innerFrame} online={isOnline} recording={v.recording} />
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between gap-2 px-4 py-2.5 text-[11px]">
+        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+          <Signal className="h-3 w-3" />
+          <span className="tabular-nums">{v.signalQuality}%</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+          <CameraIcon className="h-3 w-3" />
+          <span>{v.cameras} câm.</span>
+        </span>
+        <span className="text-muted-foreground">{formatTimeAgo(v.lastTransmission)}</span>
+      </div>
+    </Card>
+  );
+}
+
+function FrameView({ label, src, online, recording }: { label: string; src: string; online: boolean; recording: boolean }) {
+  return (
+    <div className="relative aspect-video overflow-hidden bg-black">
+      {online ? (
+        <img
+          src={src}
+          alt={`Câmera ${label}`}
+          loading="lazy"
+          className="h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
+        />
+      ) : (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(45deg,oklch(0.18_0.02_250)_0_8px,oklch(0.21_0.02_250)_8px_16px)] text-muted-foreground">
+          <VideoOff className="h-5 w-5" />
+          <span className="text-[10px] uppercase tracking-wider">Sem sinal</span>
+        </div>
+      )}
+
+      {/* Overlay */}
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between px-2 py-1.5 text-[10px] font-medium uppercase tracking-wider text-white">
+        <span className="rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm">{label}</span>
+        {online && recording && (
+          <span className="inline-flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-destructive pulse-dot" />
+            REC
+          </span>
+        )}
+      </div>
     </div>
   );
 }
