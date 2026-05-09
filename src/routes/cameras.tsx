@@ -3,17 +3,13 @@ import { useMemo, useState } from "react";
 import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck, Signal, Camera as CameraIcon } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusBadge } from "@/components/status-badge";
-import { VEHICLES, generateTimeSeries, formatTimeAgo } from "@/lib/mock-data";
+import { VEHICLES, formatTimeAgo } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  ResponsiveContainer, PieChart, Pie, Cell, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  BarChart, Bar, Legend,
-} from "recharts";
 
 export const Route = createFileRoute("/cameras")({
   head: () => ({
