@@ -31,7 +31,7 @@ export function AppShell() {
 
   return (
     <SidebarProvider>
-      <div className="dark min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
