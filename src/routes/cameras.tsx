@@ -217,15 +217,20 @@ function FrameView({ label, src, online, recording }: { label: string; src: stri
 }
 
 function TvMode({ onClose }: { onClose: () => void }) {
-  const TILES_PER_PAGE = 8;
-  const ROTATE_MS = 8000;
+  const TILES_PER_PAGE = 10;
+  const ROTATE_MS = 26000;
 
-  // Show only vehicles with active cameras (online/unstable) for the wall
-  const cams = useMemo(
-    () => VEHICLES.filter((v) => v.cameraStatus === "online" || v.cameraStatus === "unstable"),
-    [],
-  );
-  const pages = Math.max(1, Math.ceil(cams.length / TILES_PER_PAGE));
+  // Build tiles: 2 câmeras (frontal + interna) por veículo ativo
+  const tiles = useMemo(() => {
+    const list: { vehicle: typeof VEHICLES[number]; view: "Frontal" | "Interna" }[] = [];
+    for (const v of VEHICLES) {
+      if (v.cameraStatus !== "online" && v.cameraStatus !== "unstable") continue;
+      list.push({ vehicle: v, view: "Frontal" });
+      list.push({ vehicle: v, view: "Interna" });
+    }
+    return list;
+  }, []);
+  const pages = Math.max(1, Math.ceil(tiles.length / TILES_PER_PAGE));
   const [pageIdx, setPageIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -258,8 +263,8 @@ function TvMode({ onClose }: { onClose: () => void }) {
 
   const enterFullscreen = () => containerRef.current?.requestFullscreen?.();
 
-  const start = pageIdx * TILES_PER_PAGE;
-  const tiles = cams.slice(start, start + TILES_PER_PAGE);
+  const startIdx = pageIdx * TILES_PER_PAGE;
+  const pageTiles = tiles.slice(startIdx, startIdx + TILES_PER_PAGE);
 
   return (
     <div
@@ -273,7 +278,7 @@ function TvMode({ onClose }: { onClose: () => void }) {
           <span className="text-sm font-semibold tracking-tight">Modo TV · Mural de câmeras</span>
         </div>
         <span className="text-xs text-muted-foreground">
-          {cams.length} câmeras · página {pageIdx + 1}/{pages}
+          {tiles.length} câmeras · página {pageIdx + 1}/{pages}
         </span>
         <div className="ml-auto flex items-center gap-1.5">
           <Button size="sm" variant="ghost" onClick={() => setPageIdx((p) => (p - 1 + pages) % pages)}>
@@ -308,12 +313,12 @@ function TvMode({ onClose }: { onClose: () => void }) {
       <div className="flex-1 overflow-hidden p-3">
         <div
           key={pageIdx}
-          className="grid h-full grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2 animate-fade-in"
+          className="grid h-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:grid-rows-2 animate-fade-in"
         >
-          {tiles.map((v) => (
-            <TvTile key={v.id} vehicle={v} />
+          {pageTiles.map((t, i) => (
+            <TvTile key={`${t.vehicle.id}-${t.view}-${i}`} vehicle={t.vehicle} view={t.view} />
           ))}
-          {Array.from({ length: Math.max(0, TILES_PER_PAGE - tiles.length) }).map((_, i) => (
+          {Array.from({ length: Math.max(0, TILES_PER_PAGE - pageTiles.length) }).map((_, i) => (
             <div key={`empty-${i}`} className="rounded-md border border-dashed border-border/40 bg-muted/10" />
           ))}
         </div>
@@ -322,17 +327,20 @@ function TvMode({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TvTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
+function TvTile({ vehicle: v, view }: { vehicle: typeof VEHICLES[number]; view: "Frontal" | "Interna" }) {
   const seed = v.id.replace(/\D/g, "");
-  const src = `https://picsum.photos/seed/front-${seed}/800/450`;
+  const prefix = view === "Frontal" ? "front" : "inner";
+  const src = `https://picsum.photos/seed/${prefix}-${seed}/800/450`;
   return (
     <div className="group relative overflow-hidden rounded-md border border-border/60 bg-black">
-      <img src={src} alt={`Câmera ${v.plate}`} className="h-full w-full object-cover" />
+      <img src={src} alt={`Câmera ${view} ${v.plate}`} className="h-full w-full object-cover" />
       <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-white">
         <div className="flex items-center gap-2 text-xs">
           <Truck className="h-3.5 w-3.5" />
           <span className="font-mono font-semibold tracking-wide">{v.plate}</span>
-          <span className="text-white/70">· {v.id}</span>
+          <span className="rounded bg-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider backdrop-blur-sm">
+            {view}
+          </span>
         </div>
         {v.recording && (
           <span className="inline-flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wider backdrop-blur-sm">
@@ -345,7 +353,7 @@ function TvTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
         <span className="inline-flex items-center gap-1">
           <Signal className="h-3 w-3" /> {v.signalQuality}%
         </span>
-        <span>{v.name}</span>
+        <span className="truncate">{v.name}</span>
         <StatusBadge status={v.cameraStatus} />
       </div>
     </div>
