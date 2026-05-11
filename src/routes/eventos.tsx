@@ -20,7 +20,7 @@ import {
 export const Route = createFileRoute("/eventos")({
   head: () => ({
     meta: [
-      { title: "Eventos · SMOV" },
+      { title: "Eventos · SafeFleet" },
       { name: "description", content: "Análise de não geração de eventos e anomalias operacionais." },
     ],
   }),

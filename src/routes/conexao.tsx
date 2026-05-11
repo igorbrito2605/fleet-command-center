@@ -20,7 +20,7 @@ import {
 export const Route = createFileRoute("/conexao")({
   head: () => ({
     meta: [
-      { title: "Conexão · SMOV" },
+      { title: "Conexão · SafeFleet" },
       { name: "description", content: "Status de conectividade dos veículos em tempo real." },
     ],
   }),

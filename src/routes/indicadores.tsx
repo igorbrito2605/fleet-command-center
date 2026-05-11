@@ -9,7 +9,7 @@ import {
 export const Route = createFileRoute("/indicadores")({
   head: () => ({
     meta: [
-      { title: "Indicadores · SMOV" },
+      { title: "Indicadores · SafeFleet" },
       { name: "description", content: "Indicadores e tendências das câmeras embarcadas." },
     ],
   }),

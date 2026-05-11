@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Visão Geral · SMOV" },
+      { title: "Visão Geral · SafeFleet" },
       { name: "description", content: "Centro de operações em tempo real para a frota." },
     ],
   }),
