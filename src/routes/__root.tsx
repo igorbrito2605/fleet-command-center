@@ -73,7 +73,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SMOV — Monitoramento Operacional Veicular" },
+      { title: "SafeFleet — Central de Monitoramento Veicular" },
       { name: "description", content: "Dashboard em tempo real para monitoramento de frota, câmeras embarcadas, conectividade e telemetria." },
       { name: "author", content: "SMOV" },
       { property: "og:title", content: "SMOV — Monitoramento Operacional Veicular" },

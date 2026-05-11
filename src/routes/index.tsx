@@ -23,7 +23,7 @@ function Overview() {
   const noEvents = VEHICLES.filter((v) => v.minutesSinceEvent > 240).length;
   const critical = VEHICLES.filter((v) => v.criticality === "critical").length;
 
-  const series = generateTimeSeries(24, 88, 6);
+  
 
   const recentAlerts = [...VEHICLES]
     .filter((v) => v.cameraStatus !== "online" || v.connectionStatus !== "connected")
