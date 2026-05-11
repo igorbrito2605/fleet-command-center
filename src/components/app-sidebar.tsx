@@ -32,9 +32,9 @@ export function AppSidebar() {
             <ShieldCheck className="h-5 w-5 text-primary" />
           </div>
           <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold tracking-tight">SMOV</span>
+            <span className="text-sm font-semibold tracking-tight">SafeFleet</span>
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Operações Veiculares
+              Central de Monitoramento Veicular
             </span>
           </div>
         </div>

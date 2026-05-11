@@ -2,23 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Video, Wifi, AlertTriangle, Truck, Activity, Radio } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusBadge } from "@/components/status-badge";
-import { VEHICLES, generateTimeSeries, formatTimeAgo } from "@/lib/mock-data";
+import { VEHICLES, formatTimeAgo } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Visão Geral · SMOV" },
+      { title: "Visão Geral · SafeFleet" },
       { name: "description", content: "Centro de operações em tempo real para a frota." },
     ],
   }),
@@ -32,7 +23,7 @@ function Overview() {
   const noEvents = VEHICLES.filter((v) => v.minutesSinceEvent > 240).length;
   const critical = VEHICLES.filter((v) => v.criticality === "critical").length;
 
-  const series = generateTimeSeries(24, 88, 6);
+  
 
   const recentAlerts = [...VEHICLES]
     .filter((v) => v.cameraStatus !== "online" || v.connectionStatus !== "connected")
@@ -153,44 +144,6 @@ function Overview() {
         </Card>
       </div>
 
-      <Card className="border-border/60 p-5">
-        <div className="mb-2 flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold">Disponibilidade da frota (24h)</h2>
-            <p className="text-xs text-muted-foreground">Percentual de veículos com câmera e conexão ativas</p>
-          </div>
-        </div>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={series}>
-              <defs>
-                <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="oklch(0.7 0.18 230)" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="oklch(0.7 0.18 230)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="oklch(0.3 0.025 250)" strokeDasharray="3 3" />
-              <XAxis dataKey="time" stroke="oklch(0.7 0.02 250)" fontSize={11} />
-              <YAxis domain={[60, 100]} stroke="oklch(0.7 0.02 250)" fontSize={11} unit="%" />
-              <Tooltip
-                contentStyle={{
-                  background: "oklch(0.21 0.025 250)",
-                  border: "1px solid oklch(0.3 0.025 250)",
-                  borderRadius: 8,
-                  fontSize: 12,
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke="oklch(0.7 0.18 230)"
-                strokeWidth={2}
-                fill="url(#g1)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
     </div>
   );
 }

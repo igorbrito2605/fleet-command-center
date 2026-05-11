@@ -14,7 +14,7 @@ import {
 export const Route = createFileRoute("/cameras")({
   head: () => ({
     meta: [
-      { title: "Câmeras · SMOV" },
+      { title: "Câmeras · SafeFleet" },
       { name: "description", content: "Status em tempo real das câmeras embarcadas." },
     ],
   }),
