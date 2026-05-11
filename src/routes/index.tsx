@@ -2,18 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Video, Wifi, AlertTriangle, Truck, Activity, Radio } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusBadge } from "@/components/status-badge";
-import { VEHICLES, generateTimeSeries, formatTimeAgo } from "@/lib/mock-data";
+import { VEHICLES, formatTimeAgo } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
