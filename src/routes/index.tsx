@@ -81,8 +81,8 @@ function Overview() {
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="border-border/60 p-5 lg:col-span-2">
+      <div className="grid gap-4">
+        <Card className="border-border/60 p-5">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold">Status operacional da frota</h2>
@@ -119,30 +119,31 @@ function Overview() {
             })}
           </div>
         </Card>
-        <Card className="border-border/60 p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Alertas recentes</h2>
-            <Radio className="h-4 w-4 text-destructive pulse-dot" />
-          </div>
-          <div className="space-y-2 max-h-[360px] overflow-auto scrollbar-thin pr-1">
-            {recentAlerts.map((v) => (
-              <div
-                key={v.id}
-                className="flex items-center justify-between rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-sm"
-              >
-                <div className="min-w-0">
-                  <div className="truncate font-medium">{v.id} · {v.plate}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {v.cameraStatus !== "online" ? "Câmera " : "Conexão "}
-                    {formatTimeAgo(v.lastTransmission)}
-                  </div>
-                </div>
-                <StatusBadge status={v.cameraStatus !== "online" ? v.cameraStatus : v.connectionStatus} />
-              </div>
-            ))}
-          </div>
-        </Card>
       </div>
+
+      <Card className="border-border/60 p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold">Alertas recentes</h2>
+          <Radio className="h-4 w-4 text-destructive pulse-dot" />
+        </div>
+        <div className="space-y-2 max-h-[360px] overflow-auto scrollbar-thin pr-1">
+          {recentAlerts.map((v) => (
+            <div
+              key={v.id}
+              className="flex items-center justify-between rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-sm"
+            >
+              <div className="min-w-0">
+                <div className="truncate font-medium">{v.id} · {v.plate}</div>
+                <div className="text-xs text-muted-foreground">
+                  {v.cameraStatus !== "online" ? "Câmera " : "Conexão "}
+                  {formatTimeAgo(v.lastTransmission)}
+                </div>
+              </div>
+              <StatusBadge status={v.cameraStatus !== "online" ? v.cameraStatus : v.connectionStatus} />
+            </div>
+          ))}
+        </div>
+      </Card>
 
     </div>
   );
