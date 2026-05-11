@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck, Signal, Camera as CameraIcon } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck, Signal, Camera as CameraIcon, Tv, Pause, Play, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusBadge } from "@/components/status-badge";
 import { VEHICLES, formatTimeAgo } from "@/lib/mock-data";
@@ -27,6 +27,7 @@ function Cameras() {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
+  const [tvOpen, setTvOpen] = useState(false);
 
   const total = VEHICLES.length;
   const online = VEHICLES.filter((v) => v.cameraStatus === "online").length;
@@ -50,10 +51,18 @@ function Cameras() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">Painel de câmeras</p>
-        <h1 className="text-2xl font-semibold tracking-tight">Situação das câmeras embarcadas</h1>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">Painel de câmeras</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Situação das câmeras embarcadas</h1>
+        </div>
+        <Button onClick={() => setTvOpen(true)} size="sm" className="gap-2">
+          <Tv className="h-4 w-4" />
+          Modo TV
+        </Button>
       </div>
+
+      {tvOpen && <TvMode onClose={() => setTvOpen(false)} />}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <KpiCard label="Total" value={total} icon={<Truck className="h-5 w-5" />} tone="info" />
@@ -202,6 +211,142 @@ function FrameView({ label, src, online, recording }: { label: string; src: stri
             REC
           </span>
         )}
+      </div>
+    </div>
+  );
+}
+
+function TvMode({ onClose }: { onClose: () => void }) {
+  const TILES_PER_PAGE = 8;
+  const ROTATE_MS = 8000;
+
+  // Show only vehicles with active cameras (online/unstable) for the wall
+  const cams = useMemo(
+    () => VEHICLES.filter((v) => v.cameraStatus === "online" || v.cameraStatus === "unstable"),
+    [],
+  );
+  const pages = Math.max(1, Math.ceil(cams.length / TILES_PER_PAGE));
+  const [pageIdx, setPageIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-rotate
+  useEffect(() => {
+    if (paused) return;
+    setProgress(0);
+    const start = Date.now();
+    const tick = setInterval(() => {
+      const p = Math.min(100, ((Date.now() - start) / ROTATE_MS) * 100);
+      setProgress(p);
+    }, 100);
+    const t = setTimeout(() => setPageIdx((p) => (p + 1) % pages), ROTATE_MS);
+    return () => { clearTimeout(t); clearInterval(tick); };
+  }, [pageIdx, paused, pages]);
+
+  // ESC to exit
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === " ") { e.preventDefault(); setPaused((p) => !p); }
+      if (e.key === "ArrowRight") setPageIdx((p) => (p + 1) % pages);
+      if (e.key === "ArrowLeft") setPageIdx((p) => (p - 1 + pages) % pages);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [pages, onClose]);
+
+  const enterFullscreen = () => containerRef.current?.requestFullscreen?.();
+
+  const start = pageIdx * TILES_PER_PAGE;
+  const tiles = cams.slice(start, start + TILES_PER_PAGE);
+
+  return (
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-50 flex flex-col bg-background animate-fade-in"
+    >
+      {/* Top bar */}
+      <div className="flex items-center gap-3 border-b border-border/60 bg-background/95 px-4 py-2 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <Tv className="h-4 w-4 text-primary" />
+          <span className="text-sm font-semibold tracking-tight">Modo TV · Mural de câmeras</span>
+        </div>
+        <span className="text-xs text-muted-foreground">
+          {cams.length} câmeras · página {pageIdx + 1}/{pages}
+        </span>
+        <div className="ml-auto flex items-center gap-1.5">
+          <Button size="sm" variant="ghost" onClick={() => setPageIdx((p) => (p - 1 + pages) % pages)}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setPaused((p) => !p)} className="gap-1.5">
+            {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+            <span className="text-xs">{paused ? "Retomar" : "Pausar"}</span>
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setPageIdx((p) => (p + 1) % pages)}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+          <Button size="sm" variant="ghost" onClick={enterFullscreen}>
+            <Maximize2 className="h-4 w-4" />
+          </Button>
+          <Button size="sm" variant="outline" onClick={onClose} className="gap-1.5">
+            <X className="h-4 w-4" />
+            <span className="text-xs">Sair</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div className="h-0.5 w-full bg-muted/40">
+        <div
+          className="h-full bg-primary transition-[width] duration-100 ease-linear"
+          style={{ width: `${paused ? 0 : progress}%` }}
+        />
+      </div>
+
+      {/* Wall */}
+      <div className="flex-1 overflow-hidden p-3">
+        <div
+          key={pageIdx}
+          className="grid h-full grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2 animate-fade-in"
+        >
+          {tiles.map((v) => (
+            <TvTile key={v.id} vehicle={v} />
+          ))}
+          {Array.from({ length: Math.max(0, TILES_PER_PAGE - tiles.length) }).map((_, i) => (
+            <div key={`empty-${i}`} className="rounded-md border border-dashed border-border/40 bg-muted/10" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TvTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
+  const seed = v.id.replace(/\D/g, "");
+  const src = `https://picsum.photos/seed/front-${seed}/800/450`;
+  return (
+    <div className="group relative overflow-hidden rounded-md border border-border/60 bg-black">
+      <img src={src} alt={`Câmera ${v.plate}`} className="h-full w-full object-cover" />
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-white">
+        <div className="flex items-center gap-2 text-xs">
+          <Truck className="h-3.5 w-3.5" />
+          <span className="font-mono font-semibold tracking-wide">{v.plate}</span>
+          <span className="text-white/70">· {v.id}</span>
+        </div>
+        {v.recording && (
+          <span className="inline-flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wider backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-destructive pulse-dot" />
+            REC
+          </span>
+        )}
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/70 to-transparent px-3 py-1.5 text-[10px] text-white/85">
+        <span className="inline-flex items-center gap-1">
+          <Signal className="h-3 w-3" /> {v.signalQuality}%
+        </span>
+        <span>{v.name}</span>
+        <StatusBadge status={v.cameraStatus} />
       </div>
     </div>
   );
