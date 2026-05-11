@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck, Signal, Camera as CameraIcon } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Video, VideoOff, AlertTriangle, Activity, Disc, Truck, Signal, Camera as CameraIcon, Tv, Pause, Play, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusBadge } from "@/components/status-badge";
 import { VEHICLES, formatTimeAgo } from "@/lib/mock-data";
@@ -27,6 +27,7 @@ function Cameras() {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
+  const [tvOpen, setTvOpen] = useState(false);
 
   const total = VEHICLES.length;
   const online = VEHICLES.filter((v) => v.cameraStatus === "online").length;
@@ -50,10 +51,18 @@ function Cameras() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">Painel de câmeras</p>
-        <h1 className="text-2xl font-semibold tracking-tight">Situação das câmeras embarcadas</h1>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">Painel de câmeras</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Situação das câmeras embarcadas</h1>
+        </div>
+        <Button onClick={() => setTvOpen(true)} size="sm" className="gap-2">
+          <Tv className="h-4 w-4" />
+          Modo TV
+        </Button>
       </div>
+
+      {tvOpen && <TvMode onClose={() => setTvOpen(false)} />}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <KpiCard label="Total" value={total} icon={<Truck className="h-5 w-5" />} tone="info" />
