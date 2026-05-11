@@ -38,17 +38,6 @@ function Overview() {
           </p>
           <h1 className="text-2xl font-semibold tracking-tight">Visão Geral da Frota</h1>
         </div>
-        <div className="hidden gap-2 md:flex">
-          <Button asChild variant="outline" size="sm">
-            <Link to="/cameras">Câmeras</Link>
-          </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/conexao">Conexão</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link to="/eventos">Eventos</Link>
-          </Button>
-        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
