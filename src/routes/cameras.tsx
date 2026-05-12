@@ -217,18 +217,14 @@ function FrameView({ label, src, online, recording }: { label: string; src: stri
 }
 
 function TvMode({ onClose }: { onClose: () => void }) {
-  const TILES_PER_PAGE = 10;
+  const TILES_PER_PAGE = 5; // 5 veículos por página = 10 câmeras (2 por card)
   const ROTATE_MS = 26000;
 
-  // Build tiles: 2 câmeras (frontal + interna) por veículo ativo
+  // Cada tile = 1 veículo com suas 2 câmeras (frontal + interna)
   const tiles = useMemo(() => {
-    const list: { vehicle: typeof VEHICLES[number]; view: "Frontal" | "Interna" }[] = [];
-    for (const v of VEHICLES) {
-      if (v.cameraStatus !== "online" && v.cameraStatus !== "unstable") continue;
-      list.push({ vehicle: v, view: "Frontal" });
-      list.push({ vehicle: v, view: "Interna" });
-    }
-    return list;
+    return VEHICLES.filter(
+      (v) => v.cameraStatus === "online" || v.cameraStatus === "unstable"
+    );
   }, []);
   const pages = Math.max(1, Math.ceil(tiles.length / TILES_PER_PAGE));
   const [pageIdx, setPageIdx] = useState(0);
