@@ -217,7 +217,7 @@ function FrameView({ label, src, online, recording }: { label: string; src: stri
 }
 
 function TvMode({ onClose }: { onClose: () => void }) {
-  const TILES_PER_PAGE = 5; // 5 veículos por página = 10 câmeras (2 por card)
+  const TILES_PER_PAGE = 6; // 6 veículos por página = 12 câmeras (2 por card)
   const ROTATE_MS = 26000;
 
   // Cada tile = 1 veículo com suas 2 câmeras (frontal + interna)
@@ -309,7 +309,7 @@ function TvMode({ onClose }: { onClose: () => void }) {
       <div className="flex-1 overflow-hidden p-3">
         <div
           key={pageIdx}
-          className="grid h-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 animate-fade-in"
+          className="grid h-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in"
         >
           {pageTiles.map((v) => (
             <TvVehicleTile key={v.id} vehicle={v} />
@@ -337,7 +337,7 @@ function TvVehicleTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
         </div>
         <StatusBadge status={v.cameraStatus} />
       </div>
-      <div className="grid flex-1 grid-rows-2 gap-px bg-border/60">
+      <div className="flex flex-1 flex-col gap-2 bg-background p-2">
         <TvFrame label="Frontal" src={frontSrc} recording={v.recording} />
         <TvFrame label="Interna" src={innerSrc} recording={v.recording} />
       </div>
@@ -355,7 +355,7 @@ function TvVehicleTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
 
 function TvFrame({ label, src, recording }: { label: string; src: string; recording: boolean }) {
   return (
-    <div className="relative overflow-hidden bg-black">
+    <div className="relative aspect-video overflow-hidden rounded-sm border border-border/60 bg-black">
       <img src={src} alt={`Câmera ${label}`} className="h-full w-full object-cover" />
       <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-white">
         <span className="rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm">{label}</span>
