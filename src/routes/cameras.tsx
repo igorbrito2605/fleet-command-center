@@ -309,10 +309,10 @@ function TvMode({ onClose }: { onClose: () => void }) {
       <div className="flex-1 overflow-hidden p-3">
         <div
           key={pageIdx}
-          className="grid h-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:grid-rows-2 animate-fade-in"
+          className="grid h-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 animate-fade-in"
         >
-          {pageTiles.map((t, i) => (
-            <TvTile key={`${t.vehicle.id}-${t.view}-${i}`} vehicle={t.vehicle} view={t.view} />
+          {pageTiles.map((v) => (
+            <TvVehicleTile key={v.id} vehicle={v} />
           ))}
           {Array.from({ length: Math.max(0, TILES_PER_PAGE - pageTiles.length) }).map((_, i) => (
             <div key={`empty-${i}`} className="rounded-md border border-dashed border-border/40 bg-muted/10" />
@@ -323,34 +323,48 @@ function TvMode({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TvTile({ vehicle: v, view }: { vehicle: typeof VEHICLES[number]; view: "Frontal" | "Interna" }) {
+function TvVehicleTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
   const seed = v.id.replace(/\D/g, "");
-  const prefix = view === "Frontal" ? "front" : "inner";
-  const src = `https://picsum.photos/seed/${prefix}-${seed}/800/450`;
+  const frontSrc = `https://picsum.photos/seed/front-${seed}/800/450`;
+  const innerSrc = `https://picsum.photos/seed/inner-${seed}/800/450`;
   return (
-    <div className="group relative overflow-hidden rounded-md border border-border/60 bg-black">
-      <img src={src} alt={`Câmera ${view} ${v.plate}`} className="h-full w-full object-cover" />
-      <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent px-3 py-2 text-white">
-        <div className="flex items-center gap-2 text-xs">
-          <Truck className="h-3.5 w-3.5" />
-          <span className="font-mono font-semibold tracking-wide">{v.plate}</span>
-          <span className="rounded bg-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider backdrop-blur-sm">
-            {view}
-          </span>
+    <div className="group relative flex flex-col overflow-hidden rounded-md border border-border/60 bg-card">
+      <div className="flex items-center justify-between gap-2 border-b border-border/60 bg-muted/20 px-3 py-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <Truck className="h-3.5 w-3.5 text-primary shrink-0" />
+          <span className="font-mono text-xs font-semibold tracking-wide">{v.plate}</span>
+          <span className="truncate text-[10px] text-muted-foreground">{v.name}</span>
         </div>
-        {v.recording && (
-          <span className="inline-flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wider backdrop-blur-sm">
+        <StatusBadge status={v.cameraStatus} />
+      </div>
+      <div className="grid flex-1 grid-rows-2 gap-px bg-border/60">
+        <TvFrame label="Frontal" src={frontSrc} recording={v.recording} />
+        <TvFrame label="Interna" src={innerSrc} recording={v.recording} />
+      </div>
+      <div className="flex items-center justify-between border-t border-border/60 bg-muted/20 px-3 py-1.5 text-[10px] text-muted-foreground">
+        <span className="inline-flex items-center gap-1">
+          <Signal className="h-3 w-3" /> {v.signalQuality}%
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <CameraIcon className="h-3 w-3" /> {v.cameras} câm.
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function TvFrame({ label, src, recording }: { label: string; src: string; recording: boolean }) {
+  return (
+    <div className="relative overflow-hidden bg-black">
+      <img src={src} alt={`Câmera ${label}`} className="h-full w-full object-cover" />
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-white">
+        <span className="rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm">{label}</span>
+        {recording && (
+          <span className="inline-flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-destructive pulse-dot" />
             REC
           </span>
         )}
-      </div>
-      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/70 to-transparent px-3 py-1.5 text-[10px] text-white/85">
-        <span className="inline-flex items-center gap-1">
-          <Signal className="h-3 w-3" /> {v.signalQuality}%
-        </span>
-        <span className="truncate">{v.name}</span>
-        <StatusBadge status={v.cameraStatus} />
       </div>
     </div>
   );
