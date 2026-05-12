@@ -337,7 +337,7 @@ function TvVehicleTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
         </div>
         <StatusBadge status={v.cameraStatus} />
       </div>
-      <div className="flex flex-1 flex-col gap-2 bg-background p-2">
+      <div className="grid flex-1 min-h-0 grid-rows-2 gap-2 bg-background p-2">
         <TvFrame label="Frontal" src={frontSrc} recording={v.recording} />
         <TvFrame label="Interna" src={innerSrc} recording={v.recording} />
       </div>
@@ -355,7 +355,7 @@ function TvVehicleTile({ vehicle: v }: { vehicle: typeof VEHICLES[number] }) {
 
 function TvFrame({ label, src, recording }: { label: string; src: string; recording: boolean }) {
   return (
-    <div className="relative aspect-video overflow-hidden rounded-sm border border-border/60 bg-black">
+    <div className="relative min-h-0 w-full overflow-hidden rounded-sm border border-border/60 bg-black">
       <img src={src} alt={`Câmera ${label}`} className="h-full w-full object-cover" />
       <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-white">
         <span className="rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm">{label}</span>
