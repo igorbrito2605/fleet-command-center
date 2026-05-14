@@ -82,11 +82,8 @@ function Overview() {
           <div className="grid gap-3 sm:grid-cols-2">
             {[
               { label: "Câmeras online", value: online, total, tone: "success" as const },
-              { label: "Câmeras instáveis", value: VEHICLES.filter(v => v.cameraStatus === "unstable").length, total, tone: "warning" as const },
+              { label: "Sem comunicação", value: VEHICLES.filter(v => v.connectionStatus === "disconnected").length, total, tone: "warning" as const },
               { label: "Câmeras offline", value: VEHICLES.filter(v => v.cameraStatus === "offline" || v.cameraStatus === "fault").length, total, tone: "destructive" as const },
-              { label: "Conexão ativa", value: connected, total, tone: "info" as const },
-              { label: "GPS ativo", value: VEHICLES.filter(v => v.gps).length, total, tone: "success" as const },
-              { label: "Em ignição", value: VEHICLES.filter(v => v.ignition).length, total, tone: "info" as const },
             ].map((row) => {
               const pct = (row.value / row.total) * 100;
               const barColor =
