@@ -77,10 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Dashboard em tempo real para monitoramento de frota, câmeras embarcadas, conectividade e telemetria." },
       { name: "author", content: "SafeFleet" },
       { property: "og:title", content: "SafeFleet — Central de Monitoramento Veicular" },
-      { property: "og:description", content: "Centro de operações para frota, câmeras e telemetria em tempo real." },
+      { property: "og:description", content: "Dashboard em tempo real para monitoramento de frota, câmeras embarcadas, conectividade e telemetria." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SafeFleet — Central de Monitoramento Veicular" },
+      { name: "twitter:description", content: "Dashboard em tempo real para monitoramento de frota, câmeras embarcadas, conectividade e telemetria." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2db15a34-498e-4c7b-b2d4-e0c1472d5471/id-preview-c9dfced4--27abde06-a922-4662-9254-69f5760eacb3.lovable.app-1778797445548.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2db15a34-498e-4c7b-b2d4-e0c1472d5471/id-preview-c9dfced4--27abde06-a922-4662-9254-69f5760eacb3.lovable.app-1778797445548.png" },
     ],
     links: [
       {
